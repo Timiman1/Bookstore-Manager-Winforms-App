@@ -103,8 +103,8 @@ namespace TimToressonLabb3DBWF
                              ISBN13 = book.Isbn13,
                              AuthorName = string.Concat(author.FirstName, ' ', author.LastName)
                          }).ToList();
-                 
-                    UpdateTable(sbRecordList);
+
+                    dataGridView1.DataSource = sbRecordList;
 
                 }
                 else
@@ -144,14 +144,10 @@ namespace TimToressonLabb3DBWF
                         });
                     }
                 }
-                UpdateTable(sbRecordList);
+                dataGridView1.DataSource = sbRecordList;
             }
         }
 
-        public void UpdateTable(List<StockBalanceRecord> list)
-        {
-            dataGridView1.DataSource = ToDataTable(list);
-        }
 
         public static DataTable ToDataTable<T>(List<T> items)
         {

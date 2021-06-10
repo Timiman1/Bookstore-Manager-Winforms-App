@@ -33,7 +33,7 @@ namespace TimToressonLabb3DBWF
                 var books = context.Books;
                 var authors = context.Authors;
 
-                var booksDataList = books
+                var bookRecordsList = books
                         .Join(authors,
                         book => book.AuthorId,
                         author => author.Id,
@@ -45,7 +45,7 @@ namespace TimToressonLabb3DBWF
                         }
             ).ToList();
 
-                dataGridView1.DataSource = booksDataList;
+                dataGridView1.DataSource = bookRecordsList;
             }
         }
         private void bookstoreComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -68,7 +68,7 @@ namespace TimToressonLabb3DBWF
                     {
                         Isbn13 = isbn,
                         Amount = (int)numericUpDown1.Value,
-                        BookstoreId = (context.Bookstores.Where(bs => bs.BookstoreName == bookstoreComboBox.Text).ToArray()[0] as TimToressonLabb3DBWF.Models.Bookstore).Id,
+                        BookstoreId = context.Bookstores.First(bs => bs.BookstoreName == bookstoreComboBox.Text).Id,
 
                         Bookstore = new Bookstore() { BookstoreName = bookstoreComboBox.Text }
                     }
