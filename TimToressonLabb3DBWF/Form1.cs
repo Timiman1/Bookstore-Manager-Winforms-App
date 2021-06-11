@@ -104,8 +104,7 @@ namespace TimToressonLabb3DBWF
                              AuthorName = string.Concat(author.FirstName, ' ', author.LastName)
                          }).ToList();
 
-                    dataGridView1.DataSource = sbRecordList;
-
+                    dataGridView1.DataSource = ToDataTable(sbRecordList);
                 }
                 else
                 {
@@ -185,8 +184,18 @@ namespace TimToressonLabb3DBWF
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            sbRecordList = ConvertDataTable<StockBalanceRecord>(dataGridView1.DataSource as DataTable);
-
+            sbRecordList = new List<StockBalanceRecord>();
+            foreach (DataRow r in (dataGridView1.DataSource as DataTable).Rows)
+            {
+                sbRecordList.Add(new StockBalanceRecord()
+                {
+                    Bookstore_Name = (string)r.ItemArray[0],
+                    ISBN13 = (long)r.ItemArray[1],
+                    Title = (string)r.ItemArray[2],
+                    Author_Name = (string)r.ItemArray[3],
+                    Amount = (int)r.ItemArray[4]
+                });
+            } 
             using (TimToressonLabb3DBContext context = new TimToressonLabb3DBContext())
             {
                 var stockBal = context.StockBalances;
@@ -208,35 +217,7 @@ namespace TimToressonLabb3DBWF
                 context.SaveChanges();
             }
             MessageBox.Show("Changes were successfully saved to the database!", "Changes saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private static List<T> ConvertDataTable<T>(DataTable dt)
-        {
-            List<T> data = new List<T>();
-            foreach (DataRow row in dt.Rows)
-            {
-                T item = GetItem<T>(row);
-                data.Add(item);
-            }
-            return data;
-        }
-        private static T GetItem<T>(DataRow dr)
-        {
-            Type temp = typeof(T);
-            T obj = Activator.CreateInstance<T>();
-
-            foreach (DataColumn column in dr.Table.Columns)
-            {
-                foreach (PropertyInfo pro in temp.GetProperties())
-                {
-                    if (pro.Name == column.ColumnName)
-                        pro.SetValue(obj, dr[column.ColumnName], null);
-                    else
-                        continue;
-                }
-            }
-            return obj;
-        }
+        } 
     }
 
     public class StockBalanceRecord
@@ -255,5 +236,6 @@ namespace TimToressonLabb3DBWF
     }
     #endregion
 }
+
 
 
